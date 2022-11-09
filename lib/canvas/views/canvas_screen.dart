@@ -105,6 +105,10 @@ class _CanvasScreenState extends State<CanvasScreen> {
                   : Colors.white,
               strokeWidth: CanvasScreen.strokeWidth,
             ),
+            const SizedBox(height: 10),
+            operation.operationElements.isNotEmpty
+                ? Text(operation.operationElements.last.toString())
+                : const SizedBox(),
           ],
         ),
       ),

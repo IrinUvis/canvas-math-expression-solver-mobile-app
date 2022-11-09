@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:canvas_equation_solver_mobile_app/tflite/models/symbol_prediction_details.dart';
@@ -44,9 +45,48 @@ class MathSymbolClassifier {
 
   Future<SymbolPredictionDetails> classify(Image image) async {
     final byteData = await image.toByteData(format: ImageByteFormat.png);
-    final libImg = img_lib.decodeImage(byteData!.buffer.asUint8List().toList());
+    final libImg =
+        img_lib.decodeImage(byteData!.buffer.asUint8List().toList())!;
+
+    int left = libImg.width - 1 ~/ 2;
+    int top = libImg.height - 1 ~/ 2;
+    int right = left;
+    int bottom = top;
+    for (int x = 0; x < libImg.width; x++) {
+      for (int y = 0; y < libImg.height; y++) {
+        if (libImg.getPixel(x, y) != 4294967295) {
+          left = min(left, x);
+          top = min(top, y);
+          right = max(right, x);
+          bottom = max(bottom, y);
+        }
+      }
+    }
+
+    int leftCrop = left;
+    int topCrop = top;
+    int rightCrop = libImg.width - right;
+    int bottomCrop = libImg.height - bottom;
+
+    final orderedBoundaryCoordinates =
+        List.of([leftCrop, topCrop, rightCrop, bottomCrop])..sort();
+    final minVal = orderedBoundaryCoordinates[0];
+    final maxCrop = 2 * minVal;
+    if (leftCrop > maxCrop) leftCrop = maxCrop;
+    if (topCrop > maxCrop) topCrop = maxCrop;
+    if (rightCrop > maxCrop) rightCrop = maxCrop;
+    if (bottomCrop > maxCrop) bottomCrop = maxCrop;
+
+    final croppedImg = img_lib.copyCrop(
+      libImg,
+      leftCrop,
+      topCrop,
+      libImg.width - rightCrop - leftCrop,
+      libImg.height - bottomCrop - topCrop,
+    );
+
     final resizedImg = img_lib.copyResize(
-      libImg!,
+      croppedImg,
       width: 28,
       height: 28,
       interpolation: img_lib.Interpolation.average,
@@ -68,7 +108,7 @@ class MathSymbolClassifier {
 
     final output = List.filled(16, 0).reshape([1, 16]);
     print("Drawing:");
-    for(final row in input) {
+    for (final row in input) {
       print(row.map((e) => e.toInt()).toList());
     }
 
@@ -86,7 +126,8 @@ class MathSymbolClassifier {
     final result = output[0] as List<double>;
     final sortedResult = List.of(result)..sort();
     final highestPredictionProbability = sortedResult[sortedResult.length - 1];
-    final predictedSymbol = orderedLabels[result.indexOf(highestPredictionProbability)];
+    final predictedSymbol =
+        orderedLabels[result.indexOf(highestPredictionProbability)];
     print("Predicted symbol: $predictedSymbol");
     print("Probability: $highestPredictionProbability");
 
