@@ -18,6 +18,7 @@ class CanvasEquationSolver extends StatelessWidget {
           cardColor: cardColor,
           brightness: Brightness.dark,
         ),
+        textTheme: Typography.whiteMountainView,
       ),
       home: const CanvasScreen(),
     );
