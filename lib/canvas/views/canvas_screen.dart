@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
+import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
+import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +19,31 @@ class CanvasScreen extends StatefulWidget {
 }
 
 class _CanvasScreenState extends State<CanvasScreen> {
+  late final MathOperationCreator _mathOperationCreator;
+
+  // State
   DrawnLine? currentlyDrawnLine;
   List<DrawnLine> allDrawnLines = [];
+  MathOperation operation = const MathOperation(
+    operationElements: [],
+    result: 0.0,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMathOperationCreator();
+  }
+
+  Future<void> _initializeMathOperationCreator() async {
+    _mathOperationCreator = await MathOperationCreator.create();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mathOperationCreator.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +58,9 @@ class _CanvasScreenState extends State<CanvasScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              _updateOperationFromCurrentDrawing(canvasSize);
+            },
             icon: const Icon(Icons.share),
           ),
           IconButton(
@@ -41,7 +70,8 @@ class _CanvasScreenState extends State<CanvasScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
+        padding: const EdgeInsets.symmetric(
+            vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -106,6 +136,36 @@ class _CanvasScreenState extends State<CanvasScreen> {
     setState(() {
       currentlyDrawnLine = null;
       allDrawnLines = drawnLines;
+    });
+  }
+
+  /// Method to be called to update state of the operation, based on the currently drawn symbol.
+  /// The parameter is the size of the canvas, on which the user is drawing.
+  Future<void> _updateOperationFromCurrentDrawing(double canvasSize) async {
+    final recorder = PictureRecorder();
+    final canvas = Canvas(recorder);
+    final lines = allDrawnLines;
+    const strokeWidth = CanvasScreen.strokeWidth;
+    final size = canvasSize.toInt();
+
+    canvas.drawColor(Colors.white, BlendMode.src);
+
+    Paint paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = strokeWidth;
+
+    for (int i = 0; i < lines.length; ++i) {
+      for (int j = 0; j < lines[i].path.length - 1; ++j) {
+        canvas.drawLine(lines[i].path[j], lines[i].path[j + 1], paint);
+      }
+    }
+
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(size, size);
+    await _mathOperationCreator.addMathSymbol(image);
+    setState(() {
+      operation = _mathOperationCreator.operation;
     });
   }
 
