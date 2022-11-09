@@ -1,6 +1,6 @@
-# canvas_equation_solver_mobile_app
+# Canvas equation solver
 
-Equation solver app which uses AI to acomplish its task.
+Equation solver app which uses AI to accomplish its task.
 
 ## Getting Started
 
