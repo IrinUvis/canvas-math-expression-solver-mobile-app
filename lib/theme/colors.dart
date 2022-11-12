@@ -17,3 +17,4 @@ const orangeA700 = Color(0xffff6d00);
 const accentColor = Color(0xfffe9800);
 const backgroundColor = Color(0xff232323);
 const cardColor = Color(0xff2f2f2f);
+const appBarColor = Color(0x61000000);

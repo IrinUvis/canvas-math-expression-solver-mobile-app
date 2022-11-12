@@ -20,14 +20,14 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.calculate_outlined),
             title: const Text('Calculator'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, '/');
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
             title: const Text('About this app'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, '/about');
             },
           ),
         ],
