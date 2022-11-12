@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
+import 'package:canvas_equation_solver_mobile_app/canvas/widgets/number_container.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
@@ -118,6 +119,14 @@ class _CanvasScreenState extends State<CanvasScreen> {
             operation.operationElements.isNotEmpty
                 ? Text(operation.operationElements.last.toString())
                 : const SizedBox(),
+            Row(
+              children: const [
+                NumberContainer(number: 2),
+                NumberContainer(number: 1),
+                NumberContainer(number: 3),
+                NumberContainer(number: 7),
+              ],
+            )
           ],
         ),
       ),
