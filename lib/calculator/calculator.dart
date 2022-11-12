@@ -1,3 +1,4 @@
+import 'package:canvas_equation_solver_mobile_app/calculator/exception/calculator_exception.dart';
 import 'package:canvas_equation_solver_mobile_app/calculator/expression_validator.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
 import 'package:stack/stack.dart';
@@ -94,7 +95,7 @@ class Calculator {
       case '/':
         {
           if (b == 0) {
-            throw Exception("Cannot divide by zero");
+            throw CalculatorException("Cannot divide by zero");
           }
           return a / b;
         }

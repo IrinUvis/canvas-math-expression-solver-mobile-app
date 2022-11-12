@@ -1,4 +1,5 @@
 import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
+import 'package:canvas_equation_solver_mobile_app/calculator/exception/calculator_exception.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -136,5 +137,150 @@ void main() {
     double result = calculator.calculate(expression);
 
     expect(result, 75.toDouble());
+  });
+
+  test("5*(3-2(2-2))", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.multiply,
+      MathSymbol.openingBracket,
+      MathSymbol.three,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.openingBracket,
+      MathSymbol.two,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.closingBracket,
+      MathSymbol.closingBracket
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 15.toDouble());
+  });
+
+  test("3/0", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.three,
+      MathSymbol.division,
+      MathSymbol.zero
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+        e.message == "Cannot divide by zero")));
+  });
+
+  test("5*(3-2", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.multiply,
+      MathSymbol.openingBracket,
+      MathSymbol.three,
+      MathSymbol.minus,
+      MathSymbol.two
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+        e.message == "Some opening bracket might not have a corresponding closing bracket")));
+  });
+
+  test("5*3-2)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.multiply,
+      MathSymbol.three,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "Some closing bracket might not have a corresponding opening bracket")));
+  });
+
+  test("5*(3-2(2-2)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.multiply,
+      MathSymbol.openingBracket,
+      MathSymbol.three,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.openingBracket,
+      MathSymbol.two,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "Some opening bracket might not have a corresponding closing bracket")));
+  });
+
+  test("+5-2", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.plus,
+      MathSymbol.five,
+      MathSymbol.minus,
+      MathSymbol.two
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "An expression cannot start with an operator (+, -, *, /)")));
+  });
+
+  test("5-2*", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.minus,
+      MathSymbol.two,
+      MathSymbol.multiply
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "An expression cannot end with an operator (+, -, *, /)")));
+  });
+
+  test("5-+2", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.minus,
+      MathSymbol.plus,
+      MathSymbol.two
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There can be no two operators (+, -, *, /) side by side anywhere")));
   });
 }

@@ -5,8 +5,8 @@ class ExpressionValidator {
 
   String performValidation(String expression) {
     String returnExpression;
-    _validateBracketsNumber(expression);
     _validateBracketsPairing(expression);
+    // _validateBracketsNumber(expression);
     returnExpression = _checkSymbolBeforeOpeningBrackets(expression);
     _validateNoOperatorAtExpressionBeginning(expression);
     _validateNoOperatorAtExpressionEnd(expression);
@@ -14,14 +14,14 @@ class ExpressionValidator {
     return returnExpression;
   }
 
-  // Throw an exception if the expression contains an odd number of brackets
-  void _validateBracketsNumber(String expression) {
-    int bracketsSum = 0;
-    for (int i = 0; i < expression.length; i++) {
-      if (expression[i] == '[' || expression[i] == ']') bracketsSum += 1;
-    }
-    if (bracketsSum % 2 != 0) throw CalculatorException("The number of brackets in the expression needs to be even");
-  }
+  // // Throw an exception if the expression contains an odd number of brackets
+  // void _validateBracketsNumber(String expression) {
+  //   int bracketsSum = 0;
+  //   for (int i = 0; i < expression.length; i++) {
+  //     if (expression[i] == '[' || expression[i] == ']') bracketsSum += 1;
+  //   }
+  //   if (bracketsSum % 2 != 0) throw CalculatorException("The number of brackets in the expression needs to be even");
+  // }
 
   // Throw an exception if not every opening bracket has its corresponding closing bracket and vice versa
   void _validateBracketsPairing(String expression) {
@@ -74,13 +74,13 @@ class ExpressionValidator {
   
   void _validateNoOperatorAtExpressionBeginning(String expression) {
     if (expression.startsWith('+') || expression.startsWith('-') || expression.startsWith('*') || expression.startsWith('/')) {
-      throw CalculatorException('An expression cannot start with an operator');
+      throw CalculatorException('An expression cannot start with an operator (+, -, *, /)');
     }
   }
 
   void _validateNoOperatorAtExpressionEnd(String expression) {
     if (expression.endsWith('+') || expression.endsWith('-') || expression.endsWith('*') || expression.endsWith('/')) {
-      throw CalculatorException('An expression cannot start with an operator');
+      throw CalculatorException('An expression cannot end with an operator (+, -, *, /)');
     }
   }
 
@@ -90,6 +90,7 @@ class ExpressionValidator {
       if (symbols.isNotEmpty && _isOperator(symbols.top()) && _isOperator(expression[i])) {
         throw CalculatorException("There can be no two operators (+, -, *, /) side by side anywhere");
       }
+      symbols.push(expression[i]);
     }
   }
 
