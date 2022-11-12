@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
+import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
 import 'package:flutter/material.dart';
-
 import '../widgets/drawing_area.dart';
 
 class CanvasScreen extends StatefulWidget {
@@ -52,9 +51,17 @@ class _CanvasScreenState extends State<CanvasScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.menu),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.menu,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
         ),
         actions: [
           IconButton(
@@ -69,6 +76,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
           ),
         ],
       ),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
             vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
