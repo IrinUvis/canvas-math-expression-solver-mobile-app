@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
 
-class NumberContainer extends StatelessWidget {
-  const NumberContainer({Key? key, required this.number}) : super(key: key);
-  final int number;
+class SymbolContainer extends StatelessWidget {
+  const SymbolContainer({Key? key, required this.symbol}) : super(key: key);
+  final String symbol;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class NumberContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
-        '$number',
+        symbol,
         style: Theme.of(context).textTheme.headlineMedium,
       ),
     );

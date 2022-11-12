@@ -121,10 +121,11 @@ class _CanvasScreenState extends State<CanvasScreen> {
                 : const SizedBox(),
             Row(
               children: const [
-                NumberContainer(number: 2),
-                NumberContainer(number: 1),
-                NumberContainer(number: 3),
-                NumberContainer(number: 7),
+                SymbolContainer(symbol: '2'),
+                SymbolContainer(symbol: '1'),
+                SymbolContainer(symbol: ':'),
+                SymbolContainer(symbol: '3'),
+                SymbolContainer(symbol: '7'),
               ],
             )
           ],
