@@ -16,9 +16,9 @@ class Calculator {
 
     for (int i = 0; i < expression.length; i++) {
       // Current character is a digit
-      if (isDigit(expression[i])) {
+      if (_isDigit(expression[i])) {
         String numberDigits = '';
-        while (i < expression.length && isDigit(expression[i])) {
+        while (i < expression.length && _isDigit(expression[i])) {
           numberDigits += expression[i++];
         }
         values.push(double.parse(numberDigits));
@@ -41,21 +41,21 @@ class Calculator {
                 expression[i] == '*' ||
                 expression[i] == '/') {
         while (operators.isNotEmpty &&
-                hasPrecedence(expression[i], operators.top())) {
-          values.push(applyOperation(operators.pop(), values.pop(), values.pop()));
+                _hasPrecedence(expression[i], operators.top())) {
+          values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
         }
         operators.push(expression[i]);
       }
     }
 
     while (operators.isNotEmpty) {
-      values.push(applyOperation(operators.pop(), values.pop(), values.pop()));
+      values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
     }
 
     return values.pop();
   }
 
-  bool hasPrecedence(String op1, String op2) {
+  bool _hasPrecedence(String op1, String op2) {
     if (op2 == '[' || op2 == ']') {
       return false;
     }
@@ -66,7 +66,7 @@ class Calculator {
     }
   }
 
-  double applyOperation(String op, double a, double b) {
+  double _applyOperation(String op, double a, double b) {
     switch (op) {
       case '+':
         {
@@ -91,5 +91,5 @@ class Calculator {
     return 0;
   }
 
-  bool isDigit(String character) => digits.contains(character);
+  bool _isDigit(String character) => digits.contains(character);
 }

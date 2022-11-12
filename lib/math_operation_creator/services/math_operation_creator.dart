@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
 import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart';
@@ -26,14 +27,18 @@ class MathOperationCreator {
 
   MathOperation operation;
 
+  Calculator calculator = Calculator();
+
   Future<void> addMathSymbol(Image drawnSymbol) async {
     final predictionDetails = await _mathSymbolClassifier.classify(drawnSymbol);
 
-    // TODO: Use Calculator component instead. For now result is always 0.
+    List<MathSymbol> operationElements = List.of(operation.operationElements)
+      ..add(predictionDetails.symbol.toMathSymbol());
+    double result = calculator.calculate(operationElements);
+
     operation = MathOperation(
-      operationElements: List.of(operation.operationElements)
-        ..add(predictionDetails.symbol.toMathSymbol()),
-      result: 0.0,
+      operationElements: operationElements,
+      result: result,
     );
   }
 
