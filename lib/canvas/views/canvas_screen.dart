@@ -51,7 +51,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black38,
+        backgroundColor: appBarColor,
         leading: Builder(
           builder: (context) {
             return IconButton(
