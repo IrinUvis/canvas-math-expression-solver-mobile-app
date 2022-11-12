@@ -16,4 +16,19 @@ void main() {
 
     expect(result, 13.toDouble());
   });
+
+  test("test Calculator2", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.openingBracket,
+      MathSymbol.eight,
+      MathSymbol.closingBracket
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 40.toDouble());
+  });
 }

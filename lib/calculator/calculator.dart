@@ -1,8 +1,10 @@
+import 'package:canvas_equation_solver_mobile_app/calculator/expression_validator.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
 import 'package:stack/stack.dart';
 
 class Calculator {
   List<String> digits = ['0', '1', '2', '2', '3', '4', '5', '6', '7', '8', '9'];
+  ExpressionValidator expressionValidator = ExpressionValidator();
 
   double calculate(List<MathSymbol> operationElements) {
     String expression = "";
@@ -13,6 +15,8 @@ class Calculator {
     Stack<double> values = Stack();
 
     Stack<String> operators = Stack();
+
+    expressionValidator.performValidation(expression);
 
     for (int i = 0; i < expression.length; i++) {
       // Current character is a digit
