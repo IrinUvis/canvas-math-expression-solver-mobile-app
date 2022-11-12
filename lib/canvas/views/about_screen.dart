@@ -9,6 +9,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black38,
         leading: Builder(
           builder: (context) {
             return IconButton(
