@@ -3,9 +3,12 @@ import 'package:stack/stack.dart';
 
 class ExpressionValidator {
 
-  void performValidation(String expression) {
+  String performValidation(String expression) {
+    String returnExpression;
     _validateBracketsNumber(expression);
     _validateBracketsPairing(expression);
+    returnExpression = _checkSymbolBeforeOpeningBrackets(expression);
+    return returnExpression;
   }
 
   void _validateBracketsNumber(String expression) {
@@ -30,12 +33,28 @@ class ExpressionValidator {
     if (brackets.isNotEmpty) throw CalculatorException("Some opening bracket might not have a corresponding closing bracket");
   }
 
-  void _checkSymbolBeforeOpeningBrackets(String expression) {
+  String _checkSymbolBeforeOpeningBrackets(String expression) {
     Stack<String> symbols = Stack();
     for (int i = 0; i < expression.length; i++) {
-      if (expression[i] != '[') {
-
+      if (expression[i] == '[' && symbols.isNotEmpty) {
+        if (symbols.top() != '+' && symbols.top() != '-' && symbols.top() != '*' && symbols.top() != '/') {
+          String firstPart = "";
+          String secondPart = "";
+          for (int j = 0; j < i; j++) {
+            firstPart += expression[j];
+          }
+          for (int j = i + 1; j < expression.length; j++) {
+            secondPart += expression[j];
+          }
+          expression = "$firstPart*[$secondPart";
+          symbols.push("*");
+          i++;
+          symbols.push(expression[i]);
+        }
+      } else {
+        symbols.push(expression[i]);
       }
     }
+    return expression;
   }
 }

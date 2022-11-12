@@ -16,7 +16,7 @@ class Calculator {
 
     Stack<String> operators = Stack();
 
-    expressionValidator.performValidation(expression);
+    expression = expressionValidator.performValidation(expression);
 
     for (int i = 0; i < expression.length; i++) {
       // Current character is a digit
@@ -36,7 +36,14 @@ class Calculator {
 
       // Closing brace
       else if (expression[i] == ']') {
-        while (operators.top() != '[') {}
+        while (operators.top() != '[') {
+          values.push(
+              _applyOperation(
+                  operators.pop(),
+                  values.pop(),
+                  values.pop()));
+        }
+        operators.pop();
       }
 
       // Operator

@@ -24,11 +24,13 @@ void main() {
       MathSymbol.five,
       MathSymbol.openingBracket,
       MathSymbol.eight,
+      MathSymbol.plus,
+      MathSymbol.seven,
       MathSymbol.closingBracket
     ];
 
     double result = calculator.calculate(expression);
 
-    expect(result, 40.toDouble());
+    expect(result, 75.toDouble());
   });
 }
