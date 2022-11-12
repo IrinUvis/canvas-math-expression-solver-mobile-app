@@ -77,7 +77,7 @@ class Calculator {
     }
   }
 
-  double _applyOperation(String op, double a, double b) {
+  double _applyOperation(String op, double b, double a) {
     switch (op) {
       case '+':
         {

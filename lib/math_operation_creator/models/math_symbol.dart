@@ -48,7 +48,7 @@ enum MathSymbol {
       case MathSymbol.multiply:
         return '*';
       case MathSymbol.division:
-        return '%';
+        return '/';
       case MathSymbol.openingBracket:
         return '[';
       case MathSymbol.closingBracket:
@@ -88,7 +88,7 @@ extension MathSymbolConversion on String {
         return MathSymbol.minus;
       case '*':
         return MathSymbol.multiply;
-      case '%':
+      case '/':
         return MathSymbol.division;
       case '[':
         return MathSymbol.openingBracket;
