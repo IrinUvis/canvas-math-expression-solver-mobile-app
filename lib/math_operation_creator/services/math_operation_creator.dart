@@ -48,10 +48,11 @@ class MathOperationCreator {
         operationElements: operationElements,
         result: result,
       );
-    } on CalculatorException {
+    } on CalculatorException catch (e) {
       operation = MathOperation(
         operationElements: operationElements,
         result: operation.result,
+        errorMessage: e.message,
       );
     }
   }
