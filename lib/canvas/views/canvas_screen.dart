@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/number_container.dart';
@@ -36,7 +37,10 @@ class _CanvasScreenState extends State<CanvasScreen> {
   }
 
   Future<void> _initializeMathOperationCreator() async {
-    _mathOperationCreator = await MathOperationCreator.create(null);
+    _mathOperationCreator = await MathOperationCreator.create(
+      classifier: null,
+      calculator: Calculator(),
+    );
   }
 
   @override
@@ -119,6 +123,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
             operation.operationElements.isNotEmpty
                 ? Text(operation.operationElements.last.toString())
                 : const SizedBox(),
+            Text(operation.result.toString()),
             Row(
               children: const [
                 SymbolContainer(symbol: '2'),

@@ -3,12 +3,18 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:typed_data' as _i7;
+import 'dart:async' as _i7;
+import 'dart:typed_data' as _i8;
 import 'dart:ui' as _i4;
 
-import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart'
+import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart'
+    as _i9;
+import 'package:canvas_equation_solver_mobile_app/calculator/expression_validator.dart'
     as _i5;
+import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart'
+    as _i10;
+import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart'
+    as _i6;
 import 'package:canvas_equation_solver_mobile_app/tflite/models/symbol_prediction_details.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -56,11 +62,22 @@ class _FakeImage_2 extends _i1.SmartFake implements _i4.Image {
         );
 }
 
+class _FakeExpressionValidator_3 extends _i1.SmartFake
+    implements _i5.ExpressionValidator {
+  _FakeExpressionValidator_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [MathSymbolClassifier].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockMathSymbolClassifier extends _i1.Mock
-    implements _i5.MathSymbolClassifier {
+    implements _i6.MathSymbolClassifier {
   MockMathSymbolClassifier() {
     _i1.throwOnMissingStub(this);
   }
@@ -74,13 +91,13 @@ class MockMathSymbolClassifier extends _i1.Mock
         ),
       ) as _i2.Interpreter);
   @override
-  _i6.Future<_i3.SymbolPredictionDetails> classify(_i4.Image? image) =>
+  _i7.Future<_i3.SymbolPredictionDetails> classify(_i4.Image? image) =>
       (super.noSuchMethod(
         Invocation.method(
           #classify,
           [image],
         ),
-        returnValue: _i6.Future<_i3.SymbolPredictionDetails>.value(
+        returnValue: _i7.Future<_i3.SymbolPredictionDetails>.value(
             _FakeSymbolPredictionDetails_1(
           this,
           Invocation.method(
@@ -88,7 +105,7 @@ class MockMathSymbolClassifier extends _i1.Mock
             [image],
           ),
         )),
-      ) as _i6.Future<_i3.SymbolPredictionDetails>);
+      ) as _i7.Future<_i3.SymbolPredictionDetails>);
   @override
   void close() => super.noSuchMethod(
         Invocation.method(
@@ -131,7 +148,7 @@ class MockImage extends _i1.Mock implements _i4.Image {
         returnValueForMissingStub: null,
       );
   @override
-  _i6.Future<_i7.ByteData?> toByteData(
+  _i7.Future<_i8.ByteData?> toByteData(
           {_i4.ImageByteFormat? format = _i4.ImageByteFormat.rawRgba}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -139,8 +156,8 @@ class MockImage extends _i1.Mock implements _i4.Image {
           [],
           {#format: format},
         ),
-        returnValue: _i6.Future<_i7.ByteData?>.value(),
-      ) as _i6.Future<_i7.ByteData?>);
+        returnValue: _i7.Future<_i8.ByteData?>.value(),
+      ) as _i7.Future<_i8.ByteData?>);
   @override
   _i4.Image clone() => (super.noSuchMethod(
         Invocation.method(
@@ -163,4 +180,53 @@ class MockImage extends _i1.Mock implements _i4.Image {
         ),
         returnValue: false,
       ) as bool);
+}
+
+/// A class which mocks [Calculator].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCalculator extends _i1.Mock implements _i9.Calculator {
+  MockCalculator() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  List<String> get digits => (super.noSuchMethod(
+        Invocation.getter(#digits),
+        returnValue: <String>[],
+      ) as List<String>);
+  @override
+  set digits(List<String>? _digits) => super.noSuchMethod(
+        Invocation.setter(
+          #digits,
+          _digits,
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i5.ExpressionValidator get expressionValidator => (super.noSuchMethod(
+        Invocation.getter(#expressionValidator),
+        returnValue: _FakeExpressionValidator_3(
+          this,
+          Invocation.getter(#expressionValidator),
+        ),
+      ) as _i5.ExpressionValidator);
+  @override
+  set expressionValidator(_i5.ExpressionValidator? _expressionValidator) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #expressionValidator,
+          _expressionValidator,
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  double calculate(List<_i10.MathSymbol>? operationElements) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #calculate,
+          [operationElements],
+        ),
+        returnValue: 0.0,
+      ) as double);
 }
