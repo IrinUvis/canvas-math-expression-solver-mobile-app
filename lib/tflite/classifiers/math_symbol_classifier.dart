@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:canvas_equation_solver_mobile_app/tflite/models/symbol_prediction_details.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img_lib;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -48,8 +49,8 @@ class MathSymbolClassifier {
     final libImg =
         img_lib.decodeImage(byteData!.buffer.asUint8List().toList())!;
 
-    int left = libImg.width - 1 ~/ 2;
-    int top = libImg.height - 1 ~/ 2;
+    int left = (libImg.width - 1) ~/ 2;
+    int top = (libImg.height - 1) ~/ 2;
     int right = left;
     int bottom = top;
     for (int x = 0; x < libImg.width; x++) {
@@ -71,7 +72,7 @@ class MathSymbolClassifier {
     final orderedBoundaryCoordinates =
         List.of([leftCrop, topCrop, rightCrop, bottomCrop])..sort();
     final minVal = orderedBoundaryCoordinates[0];
-    final maxCrop = 2 * minVal;
+    final maxCrop = (1.5 * minVal).toInt();
     if (leftCrop > maxCrop) leftCrop = maxCrop;
     if (topCrop > maxCrop) topCrop = maxCrop;
     if (rightCrop > maxCrop) rightCrop = maxCrop;
@@ -107,9 +108,11 @@ class MathSymbolClassifier {
     }
 
     final output = List.filled(16, 0).reshape([1, 16]);
-    print("Drawing:");
-    for (final row in input) {
-      print(row.map((e) => e.toInt()).toList());
+    if (kDebugMode) {
+      print("Drawing:");
+      for (final row in input) {
+        print(row.map((e) => e.toInt()).toList());
+      }
     }
 
     interpreter.run(input, output);
@@ -128,8 +131,10 @@ class MathSymbolClassifier {
     final highestPredictionProbability = sortedResult[sortedResult.length - 1];
     final predictedSymbol =
         orderedLabels[result.indexOf(highestPredictionProbability)];
-    print("Predicted symbol: $predictedSymbol");
-    print("Probability: $highestPredictionProbability");
+    if (kDebugMode) {
+      print("Predicted symbol: $predictedSymbol");
+      print("Probability: $highestPredictionProbability");
+    }
 
     return SymbolPredictionDetails(
       symbol: predictedSymbol,

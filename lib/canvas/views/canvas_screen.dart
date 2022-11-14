@@ -36,7 +36,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
   }
 
   Future<void> _initializeMathOperationCreator() async {
-    _mathOperationCreator = await MathOperationCreator.create();
+    _mathOperationCreator = await MathOperationCreator.create(null);
   }
 
   @override

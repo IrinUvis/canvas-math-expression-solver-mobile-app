@@ -11,8 +11,10 @@ class MathOperationCreator {
     required this.operation,
   }) : _mathSymbolClassifier = mathSymbolClassifier;
 
-  static Future<MathOperationCreator> create() async {
-    final mathSymbolClassifier = await MathSymbolClassifier.create();
+  static Future<MathOperationCreator> create(
+    MathSymbolClassifier? classifier,
+  ) async {
+    final mathSymbolClassifier = classifier ?? await MathSymbolClassifier.create();
     const operation = MathOperation(
       operationElements: [],
       result: 0,
