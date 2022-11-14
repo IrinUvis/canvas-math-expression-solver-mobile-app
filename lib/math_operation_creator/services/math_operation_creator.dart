@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
+import 'package:canvas_equation_solver_mobile_app/calculator/exception/calculator_exception.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
 import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart';
@@ -8,40 +9,51 @@ import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol
 class MathOperationCreator {
   MathOperationCreator._create({
     required MathSymbolClassifier mathSymbolClassifier,
+    required Calculator calculator,
     required this.operation,
-  }) : _mathSymbolClassifier = mathSymbolClassifier;
+  })  : _mathSymbolClassifier = mathSymbolClassifier,
+        _calculator = calculator;
 
-  static Future<MathOperationCreator> create(
+  static Future<MathOperationCreator> create({
     MathSymbolClassifier? classifier,
-  ) async {
-    final mathSymbolClassifier = classifier ?? await MathSymbolClassifier.create();
+    required Calculator calculator,
+  }) async {
+    final mathSymbolClassifier =
+        classifier ?? await MathSymbolClassifier.create();
     const operation = MathOperation(
       operationElements: [],
       result: 0,
     );
     return MathOperationCreator._create(
       mathSymbolClassifier: mathSymbolClassifier,
+      calculator: calculator,
       operation: operation,
     );
   }
 
   final MathSymbolClassifier _mathSymbolClassifier;
-
+  final Calculator _calculator;
   MathOperation operation;
-
-  Calculator calculator = Calculator();
 
   Future<void> addMathSymbol(Image drawnSymbol) async {
     final predictionDetails = await _mathSymbolClassifier.classify(drawnSymbol);
 
     List<MathSymbol> operationElements = List.of(operation.operationElements)
       ..add(predictionDetails.symbol.toMathSymbol());
-    double result = calculator.calculate(operationElements);
 
-    operation = MathOperation(
-      operationElements: operationElements,
-      result: result,
-    );
+    try {
+      double result = _calculator.calculate(operationElements);
+
+      operation = MathOperation(
+        operationElements: operationElements,
+        result: result,
+      );
+    } on CalculatorException {
+      operation = MathOperation(
+        operationElements: operationElements,
+        result: operation.result,
+      );
+    }
   }
 
   void clearOperation() {

@@ -12,7 +12,7 @@ class MathSymbolClassifier {
   });
 
   static const orderedLabels = [
-    '%',
+    '/',
     '*',
     '+',
     '-',
