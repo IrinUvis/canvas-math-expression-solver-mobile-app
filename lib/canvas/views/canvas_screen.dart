@@ -124,6 +124,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
                 ? Text(operation.operationElements.last.toString())
                 : const SizedBox(),
             Text(operation.result.toString()),
+            operation.errorMessage != null ? Text(operation.errorMessage!) : const SizedBox(),
             Row(
               children: const [
                 SymbolContainer(symbol: '2'),
