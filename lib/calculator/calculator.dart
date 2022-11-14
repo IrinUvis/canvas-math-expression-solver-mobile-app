@@ -30,12 +30,12 @@ class Calculator {
         i--;
       }
 
-      // Opening brace
+      // Opening bracket
       else if (expression[i] == '[') {
         operators.push(expression[i]);
       }
 
-      // Closing brace
+      // Closing bracket
       else if (expression[i] == ']') {
         while (operators.top() != '[') {
           values.push(
@@ -60,13 +60,17 @@ class Calculator {
       }
     }
 
+    // When the expression's end is reaches, its value is calculated
     while (operators.isNotEmpty) {
       values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
     }
 
+    // After all calculations the values stack should
+    // contain only one number - the expression's value
     return values.pop();
   }
 
+  // Check if operator 2 (op2) has precedence comparing to operator 1 (op1)
   bool _hasPrecedence(String op1, String op2) {
     if (op2 == '[' || op2 == ']') {
       return false;
@@ -78,6 +82,7 @@ class Calculator {
     }
   }
 
+  // Perform the operation op on numbers a and b
   double _applyOperation(String op, double b, double a) {
     switch (op) {
       case '+':
@@ -103,5 +108,6 @@ class Calculator {
     return 0;
   }
 
+  // Check if a given character is a number from range [0-9]
   bool _isDigit(String character) => digits.contains(character);
 }
