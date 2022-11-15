@@ -11,7 +11,7 @@ import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart'
     as _i9;
 import 'package:canvas_equation_solver_mobile_app/calculator/expression_validator.dart'
     as _i5;
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart'
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart'
     as _i10;
 import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart'
     as _i6;

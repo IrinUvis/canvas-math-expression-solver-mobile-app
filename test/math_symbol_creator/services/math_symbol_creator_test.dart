@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_symbol_creator.dart';
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart';
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/services/math_symbol_creator.dart';
 import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart';
 import 'package:canvas_equation_solver_mobile_app/tflite/models/symbol_prediction_details.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,16 +17,16 @@ void main() {
   final Calculator calculator = MockCalculator();
   final Image drawnSymbol = MockImage();
 
-  // group('test math operation creator', () {
-  //   test('object initialized correctly', () async {
-  //     final creator = await MathSymbolCreator.create(
-  //       classifier: classifier,
-  //       calculator: calculator,
-  //     );
+  group('test math operation creator', () {
+    //   test('object initialized correctly', () async {
+    //     final creator = await MathSymbolCreator.create(
+    //       classifier: classifier,
+    //       calculator: calculator,
+    //     );
 
-  //     // expect(creator.operation.operationElements, []);
-  //     // expect(creator.operation.result, 0.0);
-  //   });
+    //     // expect(creator.operation.operationElements, []);
+    //     // expect(creator.operation.result, 0.0);
+    //   });
 
     // test('symbols are added correctly', () async {
     //   when(classifier.classify(drawnSymbol)).thenAnswer((_) async {

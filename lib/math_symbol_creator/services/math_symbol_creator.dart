@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart';
 import 'package:canvas_equation_solver_mobile_app/tflite/classifiers/math_symbol_classifier.dart';
 
 class MathSymbolCreator {

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_symbol_creator.dart';
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart';
+import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/services/math_symbol_creator.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
