@@ -51,8 +51,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canvasSize =
-        MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,8 +83,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
       ),
       drawer: const AppDrawer(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -114,15 +112,11 @@ class _CanvasScreenState extends State<CanvasScreen> {
               onPanEnd: (details) => _onPanEnd(details, context),
               currentlyDrawnLine: currentlyDrawnLine,
               allDrawnLines: allDrawnLines,
-              strokeColor: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
+              strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               strokeWidth: CanvasScreen.strokeWidth,
             ),
             const SizedBox(height: 10),
-            operation.operationElements.isNotEmpty
-                ? Text(operation.operationElements.last.toString())
-                : const SizedBox(),
+            operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
             Text(operation.result.toString()),
             operation.errorMessage != null ? Text(operation.errorMessage!) : const SizedBox(),
             Row(
