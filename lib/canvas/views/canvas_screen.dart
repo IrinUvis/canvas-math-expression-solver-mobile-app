@@ -3,32 +3,34 @@ import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/number_container.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
+import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
+import 'package:canvas_equation_solver_mobile_app/providers/user_input_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/drawing_area.dart';
 
-class CanvasScreen extends StatefulWidget {
+class CanvasScreen extends ConsumerStatefulWidget {
   const CanvasScreen({Key? key}) : super(key: key);
 
   static const horizontalPadding = 16.0;
   static const strokeWidth = 20.0;
 
   @override
-  State<CanvasScreen> createState() => _CanvasScreenState();
+  _CanvasScreenState createState() => _CanvasScreenState();
 }
 
-class _CanvasScreenState extends State<CanvasScreen> {
+class _CanvasScreenState extends ConsumerState<CanvasScreen> {
   late final MathOperationCreator _mathOperationCreator;
 
   // State
   DrawnLine? currentlyDrawnLine;
   List<DrawnLine> allDrawnLines = [];
-  MathOperation operation = const MathOperation(
-    operationElements: [],
-    result: 0.0,
-  );
+  // MathOperation operation = const MathOperation(
+  //   operationElements: [],
+  //   result: 0.0,
+  // );
 
   @override
   void initState() {
@@ -52,6 +54,8 @@ class _CanvasScreenState extends State<CanvasScreen> {
   @override
   Widget build(BuildContext context) {
     final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final userInput = ref.watch(userInputProvider);
+    final equationResult = ref.watch(equationResultProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +76,12 @@ class _CanvasScreenState extends State<CanvasScreen> {
           IconButton(
             onPressed: () {
               _updateOperationFromCurrentDrawing(canvasSize);
+            },
+            icon: const Icon(Icons.calculate),
+          ),
+          IconButton(
+            onPressed: () {
+              // TODO: Add sharing funcitonality
             },
             icon: const Icon(Icons.share),
           ),
@@ -116,18 +126,23 @@ class _CanvasScreenState extends State<CanvasScreen> {
               strokeWidth: CanvasScreen.strokeWidth,
             ),
             const SizedBox(height: 10),
-            operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
-            Text(operation.result.toString()),
-            operation.errorMessage != null ? Text(operation.errorMessage!) : const SizedBox(),
+            // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
             Row(
-              children: const [
-                SymbolContainer(symbol: '2'),
-                SymbolContainer(symbol: '1'),
-                SymbolContainer(symbol: ':'),
-                SymbolContainer(symbol: '3'),
-                SymbolContainer(symbol: '7'),
+              children: [
+                ...userInput.map(
+                  (element) {
+                    return SymbolContainer(symbol: element.toString());
+                  },
+                ),
               ],
-            )
+            ),
+            Center(
+              child: equationResult.fold((l) {
+                return Text(l.message);
+              }, (r) {
+                return Text(r.toString());
+              }),
+            ),
           ],
         ),
       ),
@@ -188,7 +203,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
     final image = await picture.toImage(size, size);
     await _mathOperationCreator.addMathSymbol(image);
     setState(() {
-      operation = _mathOperationCreator.operation;
+      // operation = _mathOperationCreator.operation;
     });
   }
 
