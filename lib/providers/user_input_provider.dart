@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // setup provider as a global variable
 late final StateNotifierProvider<UserInputNotifier, List<MathSymbol>> userInputProvider;
 
+// WARNING - to change the state we have to put new list as state for the change to be propagated
+// e.g. state = [{some elements}]
 class UserInputNotifier extends StateNotifier<List<MathSymbol>> {
   UserInputNotifier({required this.mathSymbolCreator}) : super([]);
 

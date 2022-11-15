@@ -9,7 +9,7 @@ abstract class Failure extends Equatable {
 }
 
 class NoInputFailure extends Failure {
-  const NoInputFailure() : super("No user input");
+  const NoInputFailure() : super("Draw equation sign by sign in the box above");
 }
 
 class CalculatorFailure extends Failure {

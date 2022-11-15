@@ -17,31 +17,16 @@ class EquationSymbolsWidget extends ConsumerWidget {
       ref.read(userInputProvider.notifier).swapTwoSymbols(oldIndex, newIndex);
     }
 
-    return Container(
-      child: ReorderableGridView.extent(
-        // crossAxisCount: 3,
-        maxCrossAxisExtent: 100,
-        onReorder: onReorder,
-        childAspectRatio: 1,
-        children: userInput.asMap().entries.map((e) {
-          return SymbolContainer(
-              key: ValueKey(e),
-              symbol: e.value.toString(),
-              onDelete: (() => ref.read(userInputProvider.notifier).deleteSymbol(e.key)));
-        }).toList(),
-      ),
+    return ReorderableGridView.extent(
+      maxCrossAxisExtent: 100,
+      onReorder: onReorder,
+      childAspectRatio: 1,
+      children: userInput.asMap().entries.map((e) {
+        return SymbolContainer(
+            key: ValueKey(e),
+            symbol: e.value.toString(),
+            onDelete: (() => ref.read(userInputProvider.notifier).deleteSymbol(e.key)));
+      }).toList(),
     );
-
-    // return SingleChildScrollView(
-    //   scrollDirection: Axis.horizontal,
-    //   child: Row(
-    //     children: [
-    //       ...userInput.asMap().entries.map((e) {
-    //         return SymbolContainer(
-    //             symbol: e.value.toString(), onDelete: (() => ref.read(userInputProvider.notifier).deleteSymbol(e.key)));
-    //       })
-    //     ],
-    //   ),
-    // );
   }
 }
