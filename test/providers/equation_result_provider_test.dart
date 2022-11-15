@@ -1,8 +1,5 @@
 import 'package:canvas_equation_solver_mobile_app/failures/failure.dart';
-import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart';
-
 import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,9 +10,6 @@ class Listener extends Mock {
 }
 
 void main() {
-  // final MathSymbolClassifier classifier = MockMathSymbolClassifier();
-  // final Calculator calculator = MockCalculator();
-  // final Image drawnSymbol = MockImage();
   group('test UserInputProvider', () {
     test('defaults to NoInputFailure and notify listeners when value changes', () async {
       // setup

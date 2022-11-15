@@ -20,7 +20,22 @@ void main() async {
   userInputProvider = StateNotifierProvider<UserInputNotifier, List<MathSymbol>>((ref) {
     return UserInputNotifier(mathSymbolCreator: mathSymbolCreator);
   });
-c
+  //
+  equationResultProvider = StateNotifierProvider<EquationResultNotifier, Either<Failure, double>>((ref) {
+    final userInput = ref.watch(userInputProvider);
+    Either<Failure, double> result = const Left(NoInputFailure());
+    if (userInput.isEmpty) {
+      result = const Left(NoInputFailure());
+    } else {
+      try {
+        result = Right(calculator.calculate(userInput));
+      } on CalculatorException catch (e) {
+        result = Left(CalculatorFailure(e.message));
+      }
+    }
+    final equationResultNotifier = EquationResultNotifier(result);
+    return equationResultNotifier;
+  });
   // finally, run the app
   runApp(const ProviderScope(child: CanvasEquationSolver()));
 }
