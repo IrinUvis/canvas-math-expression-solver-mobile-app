@@ -20,8 +20,6 @@ class CanvasScreen extends ConsumerStatefulWidget {
 }
 
 class _CanvasScreenState extends ConsumerState<CanvasScreen> {
-  // late final MathOperationCreator _mathOperationCreator;
-
   // State
   DrawnLine? currentlyDrawnLine;
   List<DrawnLine> allDrawnLines = [];
@@ -115,13 +113,20 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
               ),
               const SizedBox(height: 10),
               // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
-              const EquationSymbolsWidget(),
+              SizedBox(width: canvasSize, height: canvasSize / 2, child: const EquationSymbolsWidget()),
               equationResult.fold((l) {
-                return Text(l.message);
+                return Center(
+                  child: Text(
+                    l.message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.deepOrangeAccent),
+                  ),
+                );
               }, (r) {
                 return Center(
                   child: Text(
                     "= ${r.toString()}",
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline2?.copyWith(color: Colors.orange),
                   ),
                 );
