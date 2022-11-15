@@ -3,13 +3,10 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // setup provider as a global variable
-final equationResultProvider = NotifierProvider<EquationResultProvider, Either<Failure, double>>(EquationResultProvider.new);
+late final StateNotifierProvider<EquationResultNotifier, Either<Failure, double>> equationResultProvider;
 
-class EquationResultProvider extends Notifier<Either<Failure, double>> {
-  @override
-  Either<Failure, double> build() {
-    return const Left(NoInputFailure());
-  }
+class EquationResultNotifier extends StateNotifier<Either<Failure, double>> {
+  EquationResultNotifier(Either<Failure, double> result) : super(result);
 
   void setResult(double result) {
     state = Right(result);

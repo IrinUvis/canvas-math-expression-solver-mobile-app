@@ -18,8 +18,7 @@ class MathOperationCreator {
     MathSymbolClassifier? classifier,
     required Calculator calculator,
   }) async {
-    final mathSymbolClassifier =
-        classifier ?? await MathSymbolClassifier.create();
+    final mathSymbolClassifier = classifier ?? await MathSymbolClassifier.create();
     const operation = MathOperation(
       operationElements: [],
       result: 0,
@@ -38,8 +37,7 @@ class MathOperationCreator {
   Future<void> addMathSymbol(Image drawnSymbol) async {
     final predictionDetails = await _mathSymbolClassifier.classify(drawnSymbol);
 
-    List<MathSymbol> operationElements = List.of(operation.operationElements)
-      ..add(predictionDetails.symbol.toMathSymbol());
+    List<MathSymbol> operationElements = List.of(operation.operationElements)..add(predictionDetails.symbol.toMathSymbol());
 
     try {
       double result = _calculator.calculate(operationElements);
@@ -55,6 +53,11 @@ class MathOperationCreator {
         errorMessage: e.message,
       );
     }
+  }
+
+  Future<MathSymbol> recogniseSymbol(Image drawnSymbol) async {
+    final predictionDetails = await _mathSymbolClassifier.classify(drawnSymbol);
+    return predictionDetails.symbol.toMathSymbol();
   }
 
   void clearOperation() {

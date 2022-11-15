@@ -1,9 +1,7 @@
 import 'dart:ui';
-import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
-import 'package:canvas_equation_solver_mobile_app/canvas/widgets/number_container.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
+import 'package:canvas_equation_solver_mobile_app/canvas/widgets/equation_symbols_widget.dart';
 import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/providers/user_input_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
@@ -18,43 +16,29 @@ class CanvasScreen extends ConsumerStatefulWidget {
   static const strokeWidth = 20.0;
 
   @override
-  _CanvasScreenState createState() => _CanvasScreenState();
+  ConsumerState<CanvasScreen> createState() => _CanvasScreenState();
 }
 
 class _CanvasScreenState extends ConsumerState<CanvasScreen> {
-  late final MathOperationCreator _mathOperationCreator;
+  // late final MathOperationCreator _mathOperationCreator;
 
   // State
   DrawnLine? currentlyDrawnLine;
   List<DrawnLine> allDrawnLines = [];
-  // MathOperation operation = const MathOperation(
-  //   operationElements: [],
-  //   result: 0.0,
-  // );
 
   @override
   void initState() {
     super.initState();
-    _initializeMathOperationCreator();
-  }
-
-  Future<void> _initializeMathOperationCreator() async {
-    _mathOperationCreator = await MathOperationCreator.create(
-      classifier: null,
-      calculator: Calculator(),
-    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _mathOperationCreator.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
-    final userInput = ref.watch(userInputProvider);
     final equationResult = ref.watch(equationResultProvider);
 
     return Scaffold(
@@ -75,7 +59,7 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              _updateOperationFromCurrentDrawing(canvasSize);
+              _sendDrawnSymbolToMathOperationCreator(canvasSize);
             },
             icon: const Icon(Icons.calculate),
           ),
@@ -86,64 +70,64 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             icon: const Icon(Icons.share),
           ),
           IconButton(
-            onPressed: _onCanvasCleared,
+            onPressed: () {
+              ref.read(userInputProvider.notifier).deleteAll();
+              _onCanvasCleared();
+            },
             icon: const Icon(Icons.replay),
           ),
         ],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: Text(
-                'Equation drawing canvas',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: orange200,
-                    ),
-              ),
-            ),
-            const SizedBox(height: 4.0),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0),
-              child: Text(
-                'Draw each symbol separately',
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            DrawingArea(
-              width: canvasSize,
-              height: canvasSize,
-              onPanStart: (details) => _onPanStart(details, context),
-              onPanUpdate: (details) => _onPanUpdate(details, context),
-              onPanEnd: (details) => _onPanEnd(details, context),
-              currentlyDrawnLine: currentlyDrawnLine,
-              allDrawnLines: allDrawnLines,
-              strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-              strokeWidth: CanvasScreen.strokeWidth,
-            ),
-            const SizedBox(height: 10),
-            // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
-            Row(
-              children: [
-                ...userInput.map(
-                  (element) {
-                    return SymbolContainer(symbol: element.toString());
-                  },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: Text(
+                  'Equation drawing canvas',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: orange200,
+                      ),
                 ),
-              ],
-            ),
-            Center(
-              child: equationResult.fold((l) {
+              ),
+              const SizedBox(height: 4.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                child: Text(
+                  'Draw each symbol separately',
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              DrawingArea(
+                width: canvasSize,
+                height: canvasSize,
+                onPanStart: (details) => _onPanStart(details, context),
+                onPanUpdate: (details) => _onPanUpdate(details, context),
+                onPanEnd: (details) => _onPanEnd(details, context),
+                currentlyDrawnLine: currentlyDrawnLine,
+                allDrawnLines: allDrawnLines,
+                strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                strokeWidth: CanvasScreen.strokeWidth,
+              ),
+              const SizedBox(height: 10),
+              // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
+              const EquationSymbolsWidget(),
+              equationResult.fold((l) {
                 return Text(l.message);
               }, (r) {
-                return Text(r.toString());
+                return Center(
+                  child: Text(
+                    "= ${r.toString()}",
+                    style: Theme.of(context).textTheme.headline2?.copyWith(color: Colors.orange),
+                  ),
+                );
               }),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -179,7 +163,7 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   /// Method to be called to update state of the operation, based on the currently drawn symbol.
   /// The parameter is the size of the canvas, on which the user is drawing.
-  Future<void> _updateOperationFromCurrentDrawing(double canvasSize) async {
+  Future<void> _sendDrawnSymbolToMathOperationCreator(double canvasSize) async {
     final recorder = PictureRecorder();
     final canvas = Canvas(recorder);
     final lines = allDrawnLines;
@@ -201,10 +185,9 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
     final picture = recorder.endRecording();
     final image = await picture.toImage(size, size);
-    await _mathOperationCreator.addMathSymbol(image);
-    setState(() {
-      // operation = _mathOperationCreator.operation;
-    });
+    ref.read(userInputProvider.notifier).addSymbolFromImage(image);
+
+    _onCanvasCleared();
   }
 
   /// Method to be called in order to clear the canvas completely.

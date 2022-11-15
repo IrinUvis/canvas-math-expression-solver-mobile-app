@@ -11,3 +11,7 @@ abstract class Failure extends Equatable {
 class NoInputFailure extends Failure {
   const NoInputFailure() : super("No user input");
 }
+
+class CalculatorFailure extends Failure {
+  const CalculatorFailure(String message) : super(message);
+}

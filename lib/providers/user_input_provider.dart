@@ -1,21 +1,31 @@
+import 'dart:ui';
+
 import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_symbol.dart';
+import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_symbol_creator.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // setup provider as a global variable
-final userInputProvider = NotifierProvider<UserInputProvider, List<MathSymbol>>(UserInputProvider.new);
+late final StateNotifierProvider<UserInputNotifier, List<MathSymbol>> userInputProvider;
 
-class UserInputProvider extends Notifier<List<MathSymbol>> {
-  @override
-  List<MathSymbol> build() {
-    return [];
+class UserInputNotifier extends StateNotifier<List<MathSymbol>> {
+  UserInputNotifier({required this.mathSymbolCreator}) : super([]);
+
+  MathSymbolCreator mathSymbolCreator;
+
+  void addSymbolFromImage(Image image) async {
+    final result = await mathSymbolCreator.recogniseSymbol(image);
+    addSymbol(result);
   }
 
   void addSymbol(MathSymbol symbol) {
-    state.add(symbol);
+    state = [...state, symbol];
   }
 
   void deleteSymbol(int index) {
-    state.removeAt(index);
+    List<MathSymbol> newList = List.from(state);
+    newList.removeAt(index);
+    state = newList;
   }
 
   void deleteAll() {
@@ -25,7 +35,9 @@ class UserInputProvider extends Notifier<List<MathSymbol>> {
   void swapTwoSymbols(int firstIndex, int secondIndex) {
     MathSymbol firstSymbol = state[firstIndex];
     MathSymbol secondSymbol = state[secondIndex];
-    state[firstIndex] = secondSymbol;
-    state[secondIndex] = firstSymbol;
+    List<MathSymbol> newList = List.from(state);
+    newList[firstIndex] = secondSymbol;
+    newList[secondIndex] = firstSymbol;
+    state = newList;
   }
 }
