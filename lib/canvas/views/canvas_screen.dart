@@ -5,8 +5,10 @@ import 'package:canvas_equation_solver_mobile_app/canvas/widgets/equation_symbol
 import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/providers/user_input_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import '../widgets/drawing_area.dart';
 
 class CanvasScreen extends ConsumerStatefulWidget {
@@ -62,9 +64,8 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             icon: const Icon(Icons.calculate),
           ),
           IconButton(
-            onPressed: () {
-              // TODO: Add sharing funcitonality
-            },
+            onPressed: () =>
+                Share.share(equationResult.fold((l) => "Incorrect operations or no operations were made", (r) => r.toString())),
             icon: const Icon(Icons.share),
           ),
           IconButton(

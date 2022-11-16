@@ -11,6 +11,7 @@ class CanvasEquationSolver extends StatelessWidget {
     return MaterialApp(
       title: 'Canvas Equation Solver',
       themeMode: ThemeMode.dark,
+      debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.orange,
