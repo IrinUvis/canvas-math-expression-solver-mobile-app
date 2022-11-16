@@ -24,29 +24,38 @@ class AboutScreen extends StatelessWidget {
         ),
       ),
       drawer: const AppDrawer(),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-        alignment: Alignment.topCenter,
-        child: Column(
-          children: [
-            Text(
-              'Canvas Equation Solver',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: orange200,
-                  ),
-            ),
-            const SizedBox(height: 30),
-            const CircleAvatar(
-              radius: 80,
-              backgroundImage: AssetImage('assets/icon.jpg'),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              'Draw a simple equation\nand the app will solve it for you!',
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              Text(
+                'Canvas Equation Solver',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: orange200,
+                    ),
+              ),
+              const SizedBox(height: 30),
+              const CircleAvatar(
+                radius: 80,
+                backgroundImage: AssetImage('assets/icon.jpg'),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Draw a simple operation\nand the app will solve it for you!',
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Our app supports following operations:',
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
