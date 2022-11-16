@@ -14,6 +14,9 @@ dependencies:
   tflite_flutter: ^0.9.0
   image: ^3.2.2
   stack: ^0.2.1
+  flutter_riverpod: ^2.1.1
+  dartz: ^0.10.1
+  reorderable_grid: ^1.0.5
 
 dev_dependencies:
   flutter_test:

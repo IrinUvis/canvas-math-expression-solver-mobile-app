@@ -1,58 +1,43 @@
 import 'dart:ui';
-import 'package:canvas_equation_solver_mobile_app/calculator/calculator.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/models/drawn_line.dart';
 import 'package:canvas_equation_solver_mobile_app/canvas/widgets/app_drawer.dart';
-import 'package:canvas_equation_solver_mobile_app/canvas/widgets/number_container.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/models/math_operation.dart';
-import 'package:canvas_equation_solver_mobile_app/math_operation_creator/services/math_operation_creator.dart';
+import 'package:canvas_equation_solver_mobile_app/canvas/widgets/equation_symbols_widget.dart';
+import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
+import 'package:canvas_equation_solver_mobile_app/providers/user_input_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/drawing_area.dart';
 
-class CanvasScreen extends StatefulWidget {
+class CanvasScreen extends ConsumerStatefulWidget {
   const CanvasScreen({Key? key}) : super(key: key);
 
   static const horizontalPadding = 16.0;
   static const strokeWidth = 20.0;
 
   @override
-  State<CanvasScreen> createState() => _CanvasScreenState();
+  ConsumerState<CanvasScreen> createState() => _CanvasScreenState();
 }
 
-class _CanvasScreenState extends State<CanvasScreen> {
-  late final MathOperationCreator _mathOperationCreator;
-
+class _CanvasScreenState extends ConsumerState<CanvasScreen> {
   // State
   DrawnLine? currentlyDrawnLine;
   List<DrawnLine> allDrawnLines = [];
-  MathOperation operation = const MathOperation(
-    operationElements: [],
-    result: 0.0,
-  );
 
   @override
   void initState() {
     super.initState();
-    _initializeMathOperationCreator();
-  }
-
-  Future<void> _initializeMathOperationCreator() async {
-    _mathOperationCreator = await MathOperationCreator.create(
-      classifier: null,
-      calculator: Calculator(),
-    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _mathOperationCreator.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final canvasSize =
-        MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final equationResult = ref.watch(equationResultProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,69 +57,82 @@ class _CanvasScreenState extends State<CanvasScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              _updateOperationFromCurrentDrawing(canvasSize);
+              _sendDrawnSymbolToMathOperationCreator(canvasSize);
+            },
+            icon: const Icon(Icons.calculate),
+          ),
+          IconButton(
+            onPressed: () {
+              // TODO: Add sharing funcitonality
             },
             icon: const Icon(Icons.share),
           ),
           IconButton(
-            onPressed: _onCanvasCleared,
+            onPressed: () {
+              ref.read(userInputProvider.notifier).deleteAll();
+              _onCanvasCleared();
+            },
             icon: const Icon(Icons.replay),
           ),
         ],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: Text(
-                'Equation drawing canvas',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: orange200,
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: Text(
+                  'Equation drawing canvas',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: orange200,
+                      ),
+                ),
               ),
-            ),
-            const SizedBox(height: 4.0),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0),
-              child: Text(
-                'Draw each symbol separately',
+              const SizedBox(height: 4.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                child: Text(
+                  'Draw each symbol separately',
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            DrawingArea(
-              width: canvasSize,
-              height: canvasSize,
-              onPanStart: (details) => _onPanStart(details, context),
-              onPanUpdate: (details) => _onPanUpdate(details, context),
-              onPanEnd: (details) => _onPanEnd(details, context),
-              currentlyDrawnLine: currentlyDrawnLine,
-              allDrawnLines: allDrawnLines,
-              strokeColor: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
-              strokeWidth: CanvasScreen.strokeWidth,
-            ),
-            const SizedBox(height: 10),
-            operation.operationElements.isNotEmpty
-                ? Text(operation.operationElements.last.toString())
-                : const SizedBox(),
-            Text(operation.result.toString()),
-            operation.errorMessage != null ? Text(operation.errorMessage!) : const SizedBox(),
-            Row(
-              children: const [
-                SymbolContainer(symbol: '2'),
-                SymbolContainer(symbol: '1'),
-                SymbolContainer(symbol: ':'),
-                SymbolContainer(symbol: '3'),
-                SymbolContainer(symbol: '7'),
-              ],
-            )
-          ],
+              const SizedBox(height: 8.0),
+              DrawingArea(
+                width: canvasSize,
+                height: canvasSize,
+                onPanStart: (details) => _onPanStart(details, context),
+                onPanUpdate: (details) => _onPanUpdate(details, context),
+                onPanEnd: (details) => _onPanEnd(details, context),
+                currentlyDrawnLine: currentlyDrawnLine,
+                allDrawnLines: allDrawnLines,
+                strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                strokeWidth: CanvasScreen.strokeWidth,
+              ),
+              const SizedBox(height: 10),
+              // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
+              SizedBox(width: canvasSize, height: canvasSize / 2, child: const EquationSymbolsWidget()),
+              equationResult.fold((l) {
+                return Center(
+                  child: Text(
+                    l.message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.deepOrangeAccent),
+                  ),
+                );
+              }, (r) {
+                return Center(
+                  child: Text(
+                    "= ${r.toString()}",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2?.copyWith(color: Colors.orange),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -170,7 +168,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
 
   /// Method to be called to update state of the operation, based on the currently drawn symbol.
   /// The parameter is the size of the canvas, on which the user is drawing.
-  Future<void> _updateOperationFromCurrentDrawing(double canvasSize) async {
+  Future<void> _sendDrawnSymbolToMathOperationCreator(double canvasSize) async {
     final recorder = PictureRecorder();
     final canvas = Canvas(recorder);
     final lines = allDrawnLines;
@@ -192,10 +190,9 @@ class _CanvasScreenState extends State<CanvasScreen> {
 
     final picture = recorder.endRecording();
     final image = await picture.toImage(size, size);
-    await _mathOperationCreator.addMathSymbol(image);
-    setState(() {
-      operation = _mathOperationCreator.operation;
-    });
+    ref.read(userInputProvider.notifier).addSymbolFromImage(image);
+
+    _onCanvasCleared();
   }
 
   /// Method to be called in order to clear the canvas completely.
