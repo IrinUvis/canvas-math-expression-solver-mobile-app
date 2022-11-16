@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:canvas_equation_solver_mobile_app/extensions/list_extension.dart';
 import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/models/math_symbol.dart';
 import 'package:canvas_equation_solver_mobile_app/math_symbol_creator/services/math_symbol_creator.dart';
 
@@ -34,12 +35,9 @@ class UserInputNotifier extends StateNotifier<List<MathSymbol>> {
     state = [];
   }
 
-  void swapTwoSymbols(int firstIndex, int secondIndex) {
-    MathSymbol firstSymbol = state[firstIndex];
-    MathSymbol secondSymbol = state[secondIndex];
+  void swapTwoSymbols(int oldIndex, int newIndex) {
     List<MathSymbol> newList = List.from(state);
-    newList[firstIndex] = secondSymbol;
-    newList[secondIndex] = firstSymbol;
+    newList.move(oldIndex, newIndex);
     state = newList;
   }
 }

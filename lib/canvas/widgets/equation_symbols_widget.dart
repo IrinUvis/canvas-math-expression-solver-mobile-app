@@ -25,7 +25,9 @@ class EquationSymbolsWidget extends ConsumerWidget {
         return SymbolContainer(
             key: ValueKey(e),
             symbol: e.value.toString(),
-            onDelete: (() => ref.read(userInputProvider.notifier).deleteSymbol(e.key)));
+            onDelete: (() {
+              ref.read(userInputProvider.notifier).deleteSymbol(e.key);
+            }));
       }).toList(),
     );
   }
