@@ -16,6 +16,22 @@ void main() {
     expect(result, 7.toDouble());
   });
 
+  test("(354)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.three,
+      MathSymbol.five,
+      MathSymbol.four,
+      MathSymbol.closingBracket
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 354.toDouble());
+  });
+
   test("5+8", () {
     final calculator = Calculator();
 
@@ -98,6 +114,20 @@ void main() {
     double result = calculator.calculate(expression);
 
     expect(result, 0.25.toDouble());
+  });
+
+  test("3/7", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.three,
+      MathSymbol.division,
+      MathSymbol.seven
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 0.43.toDouble());
   });
 
   test("3*2+5*(6-2)", () {
@@ -282,5 +312,37 @@ void main() {
         throwsA(predicate((e) =>
         e is CalculatorException &&
             e.message == "There can be no two operators (+, -, *, /) side by side anywhere")));
+  });
+
+  test("(*5)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.multiply,
+      MathSymbol.five,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There cannot be an operator just after the opening bracket")));
+  });
+
+  test("(7/)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.seven,
+      MathSymbol.division,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There cannot be an operator just before the closing bracket")));
   });
 }

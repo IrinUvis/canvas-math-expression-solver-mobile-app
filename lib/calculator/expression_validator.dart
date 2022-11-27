@@ -6,22 +6,14 @@ class ExpressionValidator {
   String performValidation(String expression) {
     String returnExpression;
     _validateBracketsPairing(expression);
-    // _validateBracketsNumber(expression);
     returnExpression = _checkSymbolBeforeOpeningBrackets(expression);
     _validateNoOperatorAtExpressionBeginning(expression);
     _validateNoOperatorAtExpressionEnd(expression);
     _validateNoTwoOperatorsSideBySideAnywhere(expression);
+    _validateNoOperatorAfterOpeningBracket(expression);
+    _validateNoOperatorBeforeClosingBracket(expression);
     return returnExpression;
   }
-
-  // // Throw an exception if the expression contains an odd number of brackets
-  // void _validateBracketsNumber(String expression) {
-  //   int bracketsSum = 0;
-  //   for (int i = 0; i < expression.length; i++) {
-  //     if (expression[i] == '[' || expression[i] == ']') bracketsSum += 1;
-  //   }
-  //   if (bracketsSum % 2 != 0) throw CalculatorException("The number of brackets in the expression needs to be even");
-  // }
 
   // Throw an exception if not every opening bracket has its corresponding closing bracket and vice versa
   void _validateBracketsPairing(String expression) {
@@ -58,7 +50,7 @@ class ExpressionValidator {
           for (int j = i + 1; j < expression.length; j++) {
             secondPart += expression[j];
           }
-          // combine it again with adding the multiplication opetator before the opening bracket
+          // combine it again with adding the multiplication operator before the opening bracket
           expression = "$firstPart*[$secondPart";
           symbols.push("*");
           // increase i because the expression.length has increased by one
@@ -96,5 +88,21 @@ class ExpressionValidator {
 
   bool _isOperator(String symbol) {
     return symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/';
+  }
+
+  void _validateNoOperatorAfterOpeningBracket(String expression) {
+    for (int i = 0; i < expression.length; i++) {
+      if (i != expression.length - 1 && expression[i] == '[' && _isOperator(expression[i + 1])) {
+        throw CalculatorException("There cannot be an operator just after the opening bracket");
+      }
+    }
+  }
+
+  void _validateNoOperatorBeforeClosingBracket(String expression) {
+    for (int i = 0; i < expression.length; i++) {
+      if (i != 0 && expression[i] == ']' && _isOperator(expression[i - 1])) {
+        throw CalculatorException("There cannot be an operator just before the closing bracket");
+      }
+    }
   }
 }

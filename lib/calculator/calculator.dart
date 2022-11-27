@@ -19,55 +19,61 @@ class Calculator {
 
     expression = expressionValidator.performValidation(expression);
 
-    for (int i = 0; i < expression.length; i++) {
-      // Current character is a digit
-      if (_isDigit(expression[i])) {
-        String numberDigits = '';
-        while (i < expression.length && _isDigit(expression[i])) {
-          numberDigits += expression[i++];
+    try {
+      for (int i = 0; i < expression.length; i++) {
+        // Current character is a digit
+        if (_isDigit(expression[i])) {
+          String numberDigits = '';
+          while (i < expression.length && _isDigit(expression[i])) {
+            numberDigits += expression[i++];
+          }
+          values.push(double.parse(numberDigits));
+          i--;
         }
-        values.push(double.parse(numberDigits));
-        i--;
-      }
 
-      // Opening bracket
-      else if (expression[i] == '[') {
-        operators.push(expression[i]);
-      }
-
-      // Closing bracket
-      else if (expression[i] == ']') {
-        while (operators.top() != '[') {
-          values.push(
-              _applyOperation(
-                  operators.pop(),
-                  values.pop(),
-                  values.pop()));
+        // Opening bracket
+        else if (expression[i] == '[') {
+          operators.push(expression[i]);
         }
-        operators.pop();
-      }
 
-      // Operator
-      else if (expression[i] == '+' ||
-                expression[i] == '-' ||
-                expression[i] == '*' ||
-                expression[i] == '/') {
-        while (operators.isNotEmpty &&
-                _hasPrecedence(expression[i], operators.top())) {
-          values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
+        // Closing bracket
+        else if (expression[i] == ']') {
+          while (operators.top() != '[') {
+            values.push(
+                _applyOperation(
+                    operators.pop(),
+                    values.pop(),
+                    values.pop()));
+          }
+          operators.pop();
         }
-        operators.push(expression[i]);
-      }
-    }
 
-    // When the expression's end is reaches, its value is calculated
-    while (operators.isNotEmpty) {
-      values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
+        // Operator
+        else if (expression[i] == '+' ||
+            expression[i] == '-' ||
+            expression[i] == '*' ||
+            expression[i] == '/') {
+          while (operators.isNotEmpty &&
+              _hasPrecedence(expression[i], operators.top())) {
+            values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
+          }
+          operators.push(expression[i]);
+        }
+      }
+
+      // When the expression's end is reached, its value is calculated
+      while (operators.isNotEmpty) {
+        values.push(_applyOperation(operators.pop(), values.pop(), values.pop()));
+      }
+    } on CalculatorException catch(e) {
+      throw CalculatorException(e.message);
+    } on Exception {
+      throw CalculatorException("Unexpected error occurred");
     }
 
     // After all calculations the values stack should
     // contain only one number - the expression's value
-    return values.pop();
+    return double.parse(values.pop().toStringAsFixed(2));
   }
 
   // Check if operator 2 (op2) has precedence comparing to operator 1 (op1)
