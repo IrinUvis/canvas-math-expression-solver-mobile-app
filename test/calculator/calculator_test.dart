@@ -169,6 +169,49 @@ void main() {
     expect(result, 75.toDouble());
   });
 
+  test("5((1+2)*3)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.openingBracket,
+      MathSymbol.openingBracket,
+      MathSymbol.one,
+      MathSymbol.plus,
+      MathSymbol.two,
+      MathSymbol.closingBracket,
+      MathSymbol.multiply,
+      MathSymbol.three,
+      MathSymbol.closingBracket
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 45.toDouble());
+  });
+
+  test("5((1+2)*3)2", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.five,
+      MathSymbol.openingBracket,
+      MathSymbol.openingBracket,
+      MathSymbol.one,
+      MathSymbol.plus,
+      MathSymbol.two,
+      MathSymbol.closingBracket,
+      MathSymbol.multiply,
+      MathSymbol.three,
+      MathSymbol.closingBracket,
+      MathSymbol.two
+    ];
+
+    double result = calculator.calculate(expression);
+
+    expect(result, 90.toDouble());
+  });
+
   test("5*(3-2(2-2))", () {
     final calculator = Calculator();
 
@@ -344,5 +387,51 @@ void main() {
         throwsA(predicate((e) =>
         e is CalculatorException &&
             e.message == "There cannot be an operator just before the closing bracket")));
+  });
+
+  test("(*5)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.multiply,
+      MathSymbol.five,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There cannot be an operator just after the opening bracket")));
+  });
+
+  test("(5/)", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.five,
+      MathSymbol.division,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There cannot be an operator just before the closing bracket")));
+  });
+
+  test("()", () {
+    final calculator = Calculator();
+
+    List<MathSymbol> expression = [
+      MathSymbol.openingBracket,
+      MathSymbol.closingBracket
+    ];
+
+    expect(() => calculator.calculate(expression),
+        throwsA(predicate((e) =>
+        e is CalculatorException &&
+            e.message == "There can be no empty brackets in the expression")));
   });
 }

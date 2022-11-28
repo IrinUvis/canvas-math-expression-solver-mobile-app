@@ -7,11 +7,13 @@ class ExpressionValidator {
     String returnExpression;
     _validateBracketsPairing(expression);
     returnExpression = _checkSymbolBeforeOpeningBrackets(expression);
+    returnExpression = _checkSymbolAfterClosingBrackets(returnExpression);
     _validateNoOperatorAtExpressionBeginning(expression);
     _validateNoOperatorAtExpressionEnd(expression);
     _validateNoTwoOperatorsSideBySideAnywhere(expression);
     _validateNoOperatorAfterOpeningBracket(expression);
     _validateNoOperatorBeforeClosingBracket(expression);
+    _validateNoEmptyBrackets(expression);
     return returnExpression;
   }
 
@@ -39,6 +41,10 @@ class ExpressionValidator {
     for (int i = 0; i < expression.length; i++) {
       if (expression[i] == '[' && symbols.isNotEmpty) {
         // if we are at the opening bracket
+        // and the previous symbol is not another opening bracket
+        if (i != 0 && expression[i - 1] == '[') {
+          continue;
+        }
         // and there is no operator
         if (symbols.top() != '+' && symbols.top() != '-' && symbols.top() != '*' && symbols.top() != '/') {
           String firstPart = "";
@@ -52,6 +58,46 @@ class ExpressionValidator {
           }
           // combine it again with adding the multiplication operator before the opening bracket
           expression = "$firstPart*[$secondPart";
+          symbols.push("*");
+          // increase i because the expression.length has increased by one
+          i++;
+          symbols.push(expression[i]);
+        }
+      } else {
+        symbols.push(expression[i]);
+      }
+    }
+    return expression;
+  }
+
+  // If there is no operator (+, -, *, /) after the closing bracket, a multiplication operator (*)
+  // is added so that the calculating function is able to calculate an expression value
+  String _checkSymbolAfterClosingBrackets(String expression) {
+    // stack used to check what is the first symbol before the opening bracket
+    Stack<String> symbols = Stack();
+    // loop through each expression symbol
+    for (int i = 0; i < expression.length; i++) {
+      if (expression[i] == ']' && symbols.isNotEmpty) {
+        // if we are at the closing bracket
+        // and the next symbol is not another closing bracket
+        if (i != expression.length - 1 && expression[i + 1] == ']') {
+          continue;
+        }
+        // and there is no operator
+        if (i != expression.length - 1 &&
+            expression[i + 1] != '+' && expression[i + 1] != '-' &&
+            expression[i + 1] != '*' && expression[i + 1] != '/') {
+          String firstPart = "";
+          String secondPart = "";
+          // split the expression into the part before and after the bracket
+          for (int j = 0; j < i; j++) {
+            firstPart += expression[j];
+          }
+          for (int j = i + 1; j < expression.length; j++) {
+            secondPart += expression[j];
+          }
+          // combine it again with adding the multiplication operator before the opening bracket
+          expression = "$firstPart]*$secondPart";
           symbols.push("*");
           // increase i because the expression.length has increased by one
           i++;
@@ -102,6 +148,14 @@ class ExpressionValidator {
     for (int i = 0; i < expression.length; i++) {
       if (i != 0 && expression[i] == ']' && _isOperator(expression[i - 1])) {
         throw CalculatorException("There cannot be an operator just before the closing bracket");
+      }
+    }
+  }
+
+  void _validateNoEmptyBrackets(String expression) {
+    for (int i = 0; i < expression.length; i++) {
+      if (i != expression.length - 1 && expression[i] == '[' && expression[i + 1] == "]") {
+        throw CalculatorException("There can be no empty brackets in the expression");
       }
     }
   }
