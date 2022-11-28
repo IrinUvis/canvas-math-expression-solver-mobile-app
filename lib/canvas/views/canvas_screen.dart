@@ -5,7 +5,6 @@ import 'package:canvas_equation_solver_mobile_app/canvas/widgets/equation_symbol
 import 'package:canvas_equation_solver_mobile_app/providers/equation_result_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/providers/user_input_provider.dart';
 import 'package:canvas_equation_solver_mobile_app/theme/colors.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -38,7 +37,8 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final canvasSize =
+        MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
     final equationResult = ref.watch(equationResultProvider);
 
     return Scaffold(
@@ -64,8 +64,9 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             icon: const Icon(Icons.calculate),
           ),
           IconButton(
-            onPressed: () =>
-                Share.share(equationResult.fold((l) => "Incorrect operations or no operations were made", (r) => r.toString())),
+            onPressed: () => Share.share(equationResult.fold(
+                (l) => "Incorrect operations or no operations were made",
+                (r) => r.toString())),
             icon: const Icon(Icons.share),
           ),
           IconButton(
@@ -78,62 +79,80 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: CanvasScreen.horizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                child: Text(
-                  'Equation drawing canvas',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: orange200,
-                      ),
-                ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+          horizontal: CanvasScreen.horizontalPadding,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: Text(
+                'Equation drawing canvas',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: orange200,
+                    ),
               ),
-              const SizedBox(height: 4.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.0),
-                child: Text(
-                  'Draw each symbol separately',
-                ),
+            ),
+            const SizedBox(height: 4.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2.0),
+              child: Text(
+                'Draw each symbol separately',
               ),
-              const SizedBox(height: 8.0),
-              DrawingArea(
+            ),
+            const SizedBox(height: 8.0),
+            DrawingArea(
+              width: canvasSize,
+              height: canvasSize,
+              onPanStart: (details) => _onPanStart(details, context),
+              onPanUpdate: (details) => _onPanUpdate(details, context),
+              onPanEnd: (details) => _onPanEnd(details, context),
+              currentlyDrawnLine: currentlyDrawnLine,
+              allDrawnLines: allDrawnLines,
+              strokeColor: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+              strokeWidth: CanvasScreen.strokeWidth,
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              child: SizedBox(
                 width: canvasSize,
-                height: canvasSize,
-                onPanStart: (details) => _onPanStart(details, context),
-                onPanUpdate: (details) => _onPanUpdate(details, context),
-                onPanEnd: (details) => _onPanEnd(details, context),
-                currentlyDrawnLine: currentlyDrawnLine,
-                allDrawnLines: allDrawnLines,
-                strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                strokeWidth: CanvasScreen.strokeWidth,
+                height: canvasSize / 2,
+                child: const EquationSymbolsWidget(),
               ),
-              const SizedBox(height: 10),
-              // operation.operationElements.isNotEmpty ? Text(operation.operationElements.last.toString()) : const SizedBox(),
-              SizedBox(width: canvasSize, height: canvasSize / 2, child: const EquationSymbolsWidget()),
-              equationResult.fold((l) {
-                return Center(
-                  child: Text(
-                    l.message,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.deepOrangeAccent),
-                  ),
-                );
-              }, (r) {
-                return Center(
-                  child: Text(
-                    "= ${r.toString()}",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline2?.copyWith(color: Colors.orange),
-                  ),
-                );
-              }),
-            ],
-          ),
+            ),
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: equationResult.fold((l) {
+                    return Text(
+                      l.message,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(color: Colors.deepOrangeAccent),
+                    );
+                  }, (r) {
+                    return Text(
+                      "= ${r.toString()}",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          ?.copyWith(color: Colors.orange),
+                      maxLines: 1,
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
