@@ -18,6 +18,9 @@ This command will build android package, which if downloaded on Android device w
 
 Whichever method is chosen, you will need to have Flutter SDK installed.
 
+### iOS sidenote
+If you intend to run this app on an iOS device, additional work is required due to how tflite_flutter package works. The step by step guide can be found in [tflite_flutter package documenation](https://pub.dev/packages/tflite_flutter)
+
 ## Functionalities
 The app allows the user to draw digits (0-9), basic math operators (+, -, *, /) and left and right brackets ([, ]).
 
