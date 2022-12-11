@@ -37,8 +37,7 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canvasSize =
-        MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
+    final canvasSize = MediaQuery.of(context).size.width - 2 * CanvasScreen.horizontalPadding;
     final equationResult = ref.watch(equationResultProvider);
 
     return Scaffold(
@@ -64,9 +63,8 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             icon: const Icon(Icons.calculate),
           ),
           IconButton(
-            onPressed: () => Share.share(equationResult.fold(
-                (l) => "Incorrect operations or no operations were made",
-                (r) => r.toString())),
+            onPressed: () =>
+                Share.share(equationResult.fold((l) => "Incorrect operations or no operations were made", (r) => r.toString())),
             icon: const Icon(Icons.share),
           ),
           IconButton(
@@ -112,9 +110,7 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
               onPanEnd: (details) => _onPanEnd(details, context),
               currentlyDrawnLine: currentlyDrawnLine,
               allDrawnLines: allDrawnLines,
-              strokeColor: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
+              strokeColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               strokeWidth: CanvasScreen.strokeWidth,
             ),
             const SizedBox(height: 10),
@@ -127,29 +123,19 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             ),
             Expanded(
               child: Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: equationResult.fold((l) {
-                    return Text(
-                      l.message,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6
-                          ?.copyWith(color: Colors.deepOrangeAccent),
-                    );
-                  }, (r) {
-                    return Text(
-                      "= ${r.toString()}",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2
-                          ?.copyWith(color: Colors.orange),
-                      maxLines: 1,
-                    );
-                  }),
-                ),
+                child: equationResult.fold((l) {
+                  return Text(
+                    l.message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.deepOrangeAccent),
+                  );
+                }, (r) {
+                  return Text(
+                    "= ${r.toString()}",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2?.copyWith(color: Colors.orange),
+                  );
+                }),
               ),
             ),
           ],

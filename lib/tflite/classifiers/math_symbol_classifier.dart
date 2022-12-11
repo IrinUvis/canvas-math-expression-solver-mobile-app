@@ -39,15 +39,13 @@ class MathSymbolClassifier {
     return classifier;
   }
 
-  static const _modelFileName =
-      'ai_model/handwritten_math_symbol_classification.tflite';
+  static const _modelFileName = 'ai_model/handwritten_math_symbol_classification.tflite';
 
   final Interpreter interpreter;
 
   Future<SymbolPredictionDetails> classify(Image image) async {
     final byteData = await image.toByteData(format: ImageByteFormat.png);
-    final libImg =
-        img_lib.decodeImage(byteData!.buffer.asUint8List().toList())!;
+    final libImg = img_lib.decodeImage(byteData!.buffer.asUint8List().toList())!;
 
     int left = (libImg.width - 1) ~/ 2;
     int top = (libImg.height - 1) ~/ 2;
@@ -69,10 +67,9 @@ class MathSymbolClassifier {
     int rightCrop = libImg.width - right;
     int bottomCrop = libImg.height - bottom;
 
-    final orderedBoundaryCoordinates =
-        List.of([leftCrop, topCrop, rightCrop, bottomCrop])..sort();
+    final orderedBoundaryCoordinates = List.of([leftCrop, topCrop, rightCrop, bottomCrop])..sort();
     final minVal = orderedBoundaryCoordinates[0];
-    final maxCrop = (1.5 * minVal).toInt();
+    final maxCrop = (minVal * 1.5).toInt();
     if (leftCrop > maxCrop) leftCrop = maxCrop;
     if (topCrop > maxCrop) topCrop = maxCrop;
     if (rightCrop > maxCrop) rightCrop = maxCrop;
@@ -124,13 +121,11 @@ class MathSymbolClassifier {
     interpreter.close();
   }
 
-  SymbolPredictionDetails _getPredictionDetailsFromOutput(
-      List<dynamic> output) {
+  SymbolPredictionDetails _getPredictionDetailsFromOutput(List<dynamic> output) {
     final result = output[0] as List<double>;
     final sortedResult = List.of(result)..sort();
     final highestPredictionProbability = sortedResult[sortedResult.length - 1];
-    final predictedSymbol =
-        orderedLabels[result.indexOf(highestPredictionProbability)];
+    final predictedSymbol = orderedLabels[result.indexOf(highestPredictionProbability)];
     if (kDebugMode) {
       print("Predicted symbol: $predictedSymbol");
       print("Probability: $highestPredictionProbability");

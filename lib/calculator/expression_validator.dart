@@ -2,7 +2,6 @@ import 'package:canvas_equation_solver_mobile_app/calculator/exception/calculato
 import 'package:stack/stack.dart';
 
 class ExpressionValidator {
-
   String performValidation(String expression) {
     String returnExpression;
     _validateBracketsPairing(expression);
@@ -85,8 +84,10 @@ class ExpressionValidator {
         }
         // and there is no operator
         if (i != expression.length - 1 &&
-            expression[i + 1] != '+' && expression[i + 1] != '-' &&
-            expression[i + 1] != '*' && expression[i + 1] != '/') {
+            expression[i + 1] != '+' &&
+            expression[i + 1] != '-' &&
+            expression[i + 1] != '*' &&
+            expression[i + 1] != '/') {
           String firstPart = "";
           String secondPart = "";
           // split the expression into the part before and after the bracket
@@ -109,7 +110,7 @@ class ExpressionValidator {
     }
     return expression;
   }
-  
+
   void _validateNoOperatorAtExpressionBeginning(String expression) {
     if (expression.startsWith('+') || expression.startsWith('-') || expression.startsWith('*') || expression.startsWith('/')) {
       throw CalculatorException('An expression cannot start with an operator (+, -, *, /)');
